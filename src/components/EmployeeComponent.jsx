@@ -19,54 +19,66 @@ const EmployeeComponent = () => {
   }
 
   function saveEmployee(e){
-    e.prventDefault();
+    e.preventDefault();
     const employee = {firstName, lastName, email};
     console.log(employee);
   }
-
 
   return (
     <div className="container">
       <br />
       <br />
       <div className="row">
-        <div className="card col-md-6 offset-md-3 offset-md-3">
+        <div className="card col-md-6 offset-md-3">
           <h2 className='text-center'>Add Employee</h2>
           <div className="card-body">
-            <form>
+            
+            <form onSubmit={saveEmployee}>
 
               <div className="form-group mb-2">
-                <label className="form-label">First Name</label>
-                <input type="text" 
-                placeholder='Employee First Name...' 
-                name='firstName' value={firstName} 
-                className='form-control' 
-                onChange={handleFirstName}>
-                </input>
+                {/* Added 'htmlFor' and matched it with input 'id' */}
+                <label className="form-label" htmlFor="firstName">First Name</label>
+                <input 
+                  type="text" 
+                  id="firstName"
+                  placeholder='Employee First Name...' 
+                  name='firstName' 
+                  value={firstName} 
+                  className='form-control' 
+                  onChange={handleFirstName}
+                  autoComplete="given-name"
+                />
               </div>
 
               <div className="form-group mb-2">
-                <label className="form-label">Last Name</label>
-                <input type="text" 
-                placeholder='Employee Last Name...' 
-                name='lastName' value={lastName} 
-                className='form-control' 
-                onChange={handleLastName}>
-                </input>
+                <label className="form-label" htmlFor="lastName">Last Name</label>
+                <input 
+                  type="text" 
+                  id="lastName"
+                  placeholder='Employee Last Name...' 
+                  name='lastName' 
+                  value={lastName} 
+                  className='form-control' 
+                  onChange={handleLastName}
+                  autoComplete="family-name"
+                />
               </div>
 
               <div className="form-group mb-2">
-                <label className="form-label">Email Id</label>
-                <input type="email" 
-                placeholder='Employee Email Id...' 
-                name='email' value={email} 
-                className='form-control' 
-                onChange={handleEmail}>
-                </input>
+                <label className="form-label" htmlFor="email">Email Id</label>
+                <input 
+                  type="email" 
+                  id="email"
+                  placeholder='Employee Email Id...' 
+                  name='email' 
+                  value={email} 
+                  className='form-control' 
+                  onChange={handleEmail}
+                  autoComplete="email"
+                />
               </div>
 
-              <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
-
+              <button className='btn btn-success' type='submit'>Submit</button>
             </form>
           </div>
         </div>
