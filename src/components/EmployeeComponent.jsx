@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { createEmployee } from '../services/EmployeeService';
+import { useNavigate, useNavigation } from 'react-router-dom';
 
 const EmployeeComponent = () => {
 
@@ -6,22 +8,59 @@ const EmployeeComponent = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
 
-  function handleFirstName(e){
-    setFirstName(e.target.value);
-  }
+  const [errors, setError] = useState({
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
+  
+  const navigator = useNavigate();
 
-  function handleLastName(e){
-    setLastName(e.target.value);
-  }
-
-  function handleEmail(e){
-    setEmail(e.target.value);
-  }
 
   function saveEmployee(e){
     e.preventDefault();
-    const employee = {firstName, lastName, email};
-    console.log(employee);
+
+    if(validateForm()){
+      const employee = {firstName, lastName, email};
+      
+      createEmployee(employee).then((response)=>{
+        console.log(response.data);
+        navigator("/employees");
+      });
+    }
+
+
+
+  }
+
+  function validateForm(){
+    let valid = true;
+
+    const errorCopy = {...errors};
+
+    if(firstName.trim()){
+      errorCopy.firstName = '';
+    }else{
+      errorCopy.firstName = 'First name is required...';
+      valid = false;
+    }
+
+    if(lastName.trim()){
+      errorCopy.lastName = '';
+    }else{
+      errorCopy.lastName = "Last name is required...";
+      valid = false;
+    }
+
+    if(email.trim()){
+      errorCopy.email = '';
+    }else{
+      errorCopy.email = 'Email is required...';
+      valid = false;
+    }
+    setError(errorCopy);
+
+    return valid;
   }
 
   return (
@@ -36,7 +75,6 @@ const EmployeeComponent = () => {
             <form onSubmit={saveEmployee}>
 
               <div className="form-group mb-2">
-                {/* Added 'htmlFor' and matched it with input 'id' */}
                 <label className="form-label" htmlFor="firstName">First Name</label>
                 <input 
                   type="text" 
@@ -44,10 +82,11 @@ const EmployeeComponent = () => {
                   placeholder='Employee First Name...' 
                   name='firstName' 
                   value={firstName} 
-                  className='form-control' 
-                  onChange={handleFirstName}
+                  className={`form-control ${errors.firstName ? 'is-invalid': '' }` }
+                  onChange={(e)=>setFirstName(e.target.value)}
                   autoComplete="given-name"
                 />
+                {errors.firstName && <div className='invalid-feedback'>{errors.firstName}</div>}
               </div>
 
               <div className="form-group mb-2">
@@ -58,10 +97,11 @@ const EmployeeComponent = () => {
                   placeholder='Employee Last Name...' 
                   name='lastName' 
                   value={lastName} 
-                  className='form-control' 
-                  onChange={handleLastName}
+                  className={`form-control ${errors.lastName ? 'is-invalid': ''}`}
+                  onChange={(e)=>setLastName(e.target.value)}
                   autoComplete="family-name"
                 />
+                {errors.lastName && <div className='invalid-feedback'>{errors.lastName}</div>}
               </div>
 
               <div className="form-group mb-2">
@@ -72,16 +112,17 @@ const EmployeeComponent = () => {
                   placeholder='Employee Email Id...' 
                   name='email' 
                   value={email} 
-                  className='form-control' 
-                  onChange={handleEmail}
+                  className={`form-control ${errors.email ? 'is-invalid': ''}`}
+                  onChange={(e)=>setEmail(e.target.value)}
                   autoComplete="email"
                 />
+                {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
               </div>
 
               <button className='btn btn-success' type='submit'>Submit</button>
             </form>
           </div>
-        </div>
+        </div> 
       </div>
     </div>
   )
